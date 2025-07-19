@@ -11,3 +11,126 @@ tienda3 = pd.read_csv(url3)
 tienda4 = pd.read_csv(url4)
 
 tienda.head()
+
+#Conociendo el conjunto de Datos
+
+tienda.info()
+tienda.describe()
+
+tienda2.info()
+tienda2.describe()
+
+tienda3.info()
+tienda3.describe()
+
+tienda4.info()
+tienda4.describe()
+
+categorias_unicas = tienda['Categoría del Producto'].unique()
+categorias_unicas
+
+# Analisis de la facturacion
+
+ingreso_total_tienda = tienda['Precio'].sum()
+
+ingreso_total_tienda2 = tienda2['Precio'].sum()
+
+ingreso_total_tienda3 = tienda3['Precio'].sum()
+
+ingreso_total_tienda4 = tienda4['Precio'].sum()
+
+# Crear un diccionario con los nombres y sus ingresos
+datos = {
+    'Tienda': ['tienda', 'tienda2', 'tienda3', 'tienda4'],
+    'Ingreso Total': [ingreso_total_tienda, ingreso_total_tienda2, ingreso_total_tienda3, ingreso_total_tienda4]
+}
+
+# Crear DataFrame y establecer la columna 'Tienda' como índice
+df_ingresos = pd.DataFrame(datos).set_index('Tienda')
+
+df_ingresos
+
+#Ventas por categoria
+
+# Agrupar por 'Categoría del Producto' y contar ventas en cada tienda
+ventas_tienda = tienda.groupby('Categoría del Producto').size().rename('tienda')
+ventas_tienda2 = tienda2.groupby('Categoría del Producto').size().rename('tienda2')
+ventas_tienda3 = tienda3.groupby('Categoría del Producto').size().rename('tienda3')
+ventas_tienda4 = tienda4.groupby('Categoría del Producto').size().rename('tienda4')
+
+# Unir todos en un solo DataFrame por índice ('Categoría del Producto')
+df_ventas_categorias = pd.concat([ventas_tienda, ventas_tienda2, ventas_tienda3, ventas_tienda4], axis=1).fillna(0)
+
+# Convertir a entero porque las cantidades son conteos
+df_ventas_categorias = df_ventas_categorias.astype(int)
+
+# Ordenar por índice (alfabéticamente por categoría)
+df_ventas_categorias = df_ventas_categorias.sort_index()
+
+df_ventas_categorias
+
+#Calificacion promedio de cada tienda
+
+# Calcular promedio de calificación en cada tienda
+promedio_tienda = tienda['Calificación'].mean()
+promedio_tienda2 = tienda2['Calificación'].mean()
+promedio_tienda3 = tienda3['Calificación'].mean()
+promedio_tienda4 = tienda4['Calificación'].mean()
+
+# Crear DataFrame resumen
+datos_calificaciones = {
+    'Tienda': ['tienda', 'tienda2', 'tienda3', 'tienda4'],
+    'Calificación Promedio': [promedio_tienda, promedio_tienda2, promedio_tienda3, promedio_tienda4]
+}
+
+df_calificaciones = pd.DataFrame(datos_calificaciones).set_index('Tienda')
+
+df_calificaciones
+
+#Dataframe de ventas por producto
+ventas_producto_tienda = tienda.groupby('Producto').size().rename('Cantidad de Ventas')
+df_ventas_producto_tienda = ventas_producto_tienda.reset_index().sort_values(by='Cantidad de Ventas', ascending=False)
+
+ventas_producto_tienda2 = tienda2.groupby('Producto').size().rename('Cantidad de Ventas')
+df_ventas_producto_tienda2 = ventas_producto_tienda2.reset_index().sort_values(by='Cantidad de Ventas', ascending=False)
+
+ventas_producto_tienda3 = tienda3.groupby('Producto').size().rename('Cantidad de Ventas')
+df_ventas_producto_tienda3 = ventas_producto_tienda3.reset_index().sort_values(by='Cantidad de Ventas', ascending=False)
+
+ventas_producto_tienda4 = tienda4.groupby('Producto').size().rename('Cantidad de Ventas')
+df_ventas_producto_tienda4 = ventas_producto_tienda4.reset_index().sort_values(by='Cantidad de Ventas', ascending=False)
+
+#Productos mas y menos vendidos
+
+#5 productos mas vendidos
+df_ventas_producto_tienda_top5 = df_ventas_producto_tienda.head(5)
+
+df_ventas_producto_tienda2_top5 = df_ventas_producto_tienda2.head(5)
+
+df_ventas_producto_tienda3_top5 = df_ventas_producto_tienda3.head(5)
+
+df_ventas_producto_tienda4_top5 = df_ventas_producto_tienda4.head(5)
+
+
+#5 productos menos vendidos
+df_ventas_producto_tienda_bottom5 = df_ventas_producto_tienda.tail(5)
+
+df_ventas_producto_tienda2_bottom5 = df_ventas_producto_tienda2.tail(5)
+
+df_ventas_producto_tienda3_bottom5 = df_ventas_producto_tienda3.tail(5)
+
+df_ventas_producto_tienda4_bottom5 = df_ventas_producto_tienda4.tail(5)
+
+# Crear un diccionario con los costos de envío promedio
+costo_envio_promedio = {
+    'Tienda 1': tienda['Costo de envío'].mean(),
+    'Tienda 2': tienda2['Costo de envío'].mean(),
+    'Tienda 3': tienda3['Costo de envío'].mean(),
+    'Tienda 4': tienda4['Costo de envío'].mean()
+}
+
+# Convertir el diccionario en DataFrame
+df_costo_envio = pd.DataFrame(list(costo_envio_promedio.items()), columns=['Tienda', 'Costo Envío Promedio'])
+
+# Mostrar el resultado
+print(df_costo_envio)
